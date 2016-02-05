@@ -1,0 +1,17 @@
+;; An idea for further syntax: produces a random variable which returns
+;; lists of iid draws from the given distribution.
+(n-iid (some-distribution) 20)
+
+(define-statistic (mean-difference group1 group2)
+  (- (mean group1) (mean group2)))
+
+;; To call, try something like
+(mean-difference (n-iid (normal-dist) 20) (n-iid (normal-dist 10) 20))
+
+;; Returns a distribution object which gives 1 sample from the sampling
+;; distribution each time it's called.
+;; The define-statistic macro wraps its body with checks to either
+;; (a) draw a sample from the its random parameters
+;; (b) use the value of non-random parameters
+;; so it's also possible to do
+(mean-difference 4 (n-iid (normal-dist 10) 20))
