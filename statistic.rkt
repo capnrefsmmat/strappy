@@ -37,6 +37,7 @@
     (+ a b))
 
   (check-exn exn:fail? (lambda () (foo 1)))
+  (check-exn exn:fail? (lambda () (pdf (foo 1 2))))
   (check-equal? (sample (foo 1 2)) 3)
 
   (define-statistic (multi-foo a b)
