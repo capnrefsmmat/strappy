@@ -1,6 +1,6 @@
 #lang typed/racket
 
-(provide empirical sampling-dist)
+(provide empirical sampling-dist Empirical-Dist)
 
 (require math/distributions)
 (require math/statistics)
@@ -91,23 +91,6 @@
 
   (empirical-dist-struct pdf sample cdf inv-cdf min max med ordered-data))
 
-(define-type Sampling-Dist (distribution Real Real))
-
-;; Take a function that returns one value at a time. Repeatedly call the
-;; function to sample from its sampling distribution
-(: sampling-dist-constructor (-> (-> Real) Sampling-Dist))
-(define (sampling-dist-constructor fun)
-  
-  (: pdf (->* (Real) (Any) Flonum))
-  (define (pdf query [log? #f])
-    0.0)
-  
-  (define sample (case-lambda
-                   [() (fun)]
-                   [([n : Integer]) (build-list n (lambda ([i : Index])
-                                                    (fun)))]))
-
-  (distribution pdf sample))
 
 (define-syntax-rule (sampling-dist foo)
   (sampling-dist-constructor (lambda () foo)))
