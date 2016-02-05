@@ -6,9 +6,9 @@ all: test
 test:
 	$(RACO) test -x .
 
-docs:
+docs: scribblings/*.scrbl
 	$(RACO) scribble \
-		--htmls \
+		--html \
 		--dest docs \
 		--dest-name index \
 		++main-xref-in \
