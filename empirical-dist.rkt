@@ -1,6 +1,6 @@
 #lang typed/racket
 
-(provide empirical sampling-dist Empirical-Dist)
+(provide empirical Empirical-Dist)
 
 (require math/distributions)
 (require math/statistics)
@@ -90,10 +90,6 @@
                              (vector-ref ordered-data (random n))))]))
 
   (empirical-dist-struct pdf sample cdf inv-cdf min max med ordered-data))
-
-
-(define-syntax-rule (sampling-dist foo)
-  (sampling-dist-constructor (lambda () foo)))
 
 (module+ test
   (require typed/rackunit math/distributions)
