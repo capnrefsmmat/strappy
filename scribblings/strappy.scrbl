@@ -8,11 +8,11 @@
                   [sandbox-error-output 'string]
                   [sandbox-memory-limit #f]
                   [sandbox-eval-limits #f])
-     (make-evaluator 'typed/racket)))
+     (make-evaluator 'racket)))
 
 @interaction-eval[#:eval my-evaluator
                   (require "empirical-dist.rkt" "distributions.rkt"
-                           math/distributions)]
+                           "statistic.rkt" math/distributions)]
 
 @require[@for-label[strappy
                     racket/base
@@ -63,4 +63,35 @@ previous distributions.
            (sample three-normals)
 
            ((distribution-pdf three-normals) #(0 0 0))]
+}
+
+@section{Defining Statistics}
+
+Statistics is all about @emph{statistics}: functions of random variables.
+These functions are used to run hypothesis tests, calculate confidence
+intervals, estimate uncertainty, and do many other useful things.
+
+@tt{strappy} provides tools to define test statistics and observe their
+@emph{sampling distributions}: the distributions of their outputs given their
+inputs.
+
+@defform[(define-statistic (name args ...) body ...)]{
+ Define a test statistic named @racket[name] with arguments @racket[args]. The
+ arguments are available inside @racket[body], a sequence of expressions.
+
+ @racket[define-statistic] behaves in the same way as @racket[define], so test
+ statistics are like any other functions in Racket. The only difference is that
+ test statistics take random variables as arguments, and return a
+ @emph{distribution}, not a single value. For example:
+
+ @examples[#:eval my-evaluator
+           (define-statistic (adder a b) (+ a b))
+           (sample (adder 1 2))
+           (sample (adder 1 (normal-dist)))]
+
+ If called with constant arguments, as in @racket[(adder 1 2)] above, the test
+ statistic returns a distribution which always produces the same value: the
+ function evaluated with those arguments. If any of the arguments are random
+ variables, sampling from the test statistic uses values sampled from those
+ variables's distributions.
 }
