@@ -61,3 +61,32 @@
 
 ;;; Basic statistics
 (nary-statistify dmean mean)
+
+;; I don't think I can write a macro that defines a function to accept
+;; arbitrary keyword arguments; instead, declare both cases as separate
+;; functions unified by a single statistic.
+(define-statistic (variance-bias xs ws)
+  (variance xs ws #:bias #t))
+
+(define-statistic (variance-nobias xs ws)
+  (variance xs ws))
+
+(define (variance-wrap xs [ws #f] #:bias [bias #f])
+  (if bias
+      (variance-bias xs ws)
+      (variance-nobias xs ws)))
+
+(provide (rename-out [variance-wrap variance]))
+
+(define-statistic (stddev-bias xs ws)
+  (stddev xs ws #:bias #t))
+
+(define-statistic (stddev-nobias xs ws)
+  (stddev xs ws))
+
+(define (stddev-wrap xs [ws #f] #:bias [bias #f])
+  (if bias
+      (stddev-bias xs ws)
+      (stddev-nobias xs ws)))
+
+(provide (rename-out [stddev-wrap stddev]))
