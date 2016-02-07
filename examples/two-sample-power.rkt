@@ -1,5 +1,7 @@
 #lang strappy
 
+(require plot)
+
 (define X (normal-dist 1 2))
 (define Y (normal-dist 0 2))
 

@@ -4,14 +4,12 @@
          "empirical-dist.rkt"
          "statistic.rkt"
          "basic-statistics.rkt"
-	 racket/list
-	 plot)
+	 racket/list)
 
 (provide (all-from-out "distributions.rkt"
                        "empirical-dist.rkt"
                        "statistic.rkt"
-                       "basic-statistics.rkt"
-		       plot)
+                       "basic-statistics.rkt")
          #%module-begin #%app #%datum #%top #%top-interaction
-         lambda if cond define parameterize
+         lambda if cond define require parameterize
          list vector count filter map)

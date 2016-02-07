@@ -17,7 +17,7 @@
                 	     lambda if cond define list]]]
 
 @title{strappy: Statistical Concepts in Racket}
-@author{Alex Reinhart}
+@author{@author+email["Alex Reinhart" "areinhar@stat.cmu.edu"]}
 
 @defmodule[strappy #:lang]
 
