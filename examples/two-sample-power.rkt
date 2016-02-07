@@ -17,13 +17,13 @@
   
   (define null-dist (permuted-mean-difference Xs Ys))
 
-  (define critical-value (quantile 0.95 < (sample null-dist 100)))
+  (define critical-value (quantile 0.95 < (sample null-dist 1000)))
 
   (define alternative-dist (abs-mean-difference Xs Ys))
 
   (/ (count (lambda (diff) (>= diff critical-value))
-            (sample alternative-dist 100))
-     100))
+            (sample alternative-dist 1000))
+     1000))
 
 ;; Calculate the power for a few different sample sizes.
 (define sizes (list 10 20 50 100))

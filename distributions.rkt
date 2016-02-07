@@ -49,10 +49,8 @@
     (if samples
         (for/list : [Listof (Vectorof Real)]
                    ([i (in-range 0 samples)])
-          (build-vector n (lambda ([i : Index])
-                            ((distribution-sample dist)))))
-        (build-vector n (lambda ([i : Index])
-                            ((distribution-sample dist))))))
+          (list->vector ((distribution-sample dist) n)))
+        (list->vector ((distribution-sample dist) n))))
 
   (distribution pdf sample))
 
@@ -63,5 +61,8 @@
 
   (check-equal? ((distribution-pdf foo) #(0 0 0)) (expt (pdf (normal-dist) 0) 3))
   (check-equal? ((distribution-pdf foo) #(0 0 0) #t) (* 3 (pdf (normal-dist) 0)))
+
+  (check-equal? (vector-length ((distribution-sample foo))) 3)
+  (check-equal? (vector-length (first ((distribution-sample foo) 2))) 3)
 
   (check-exn exn:fail? (lambda () ((distribution-pdf foo) #(0 0 0 0)))))
