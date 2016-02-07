@@ -29,8 +29,12 @@
         (distribution pdf (sample-from-fun args))
         (apply fun args))))
 
-(define-syntax-rule (define-statistic (fun args ...) body ...)
-  (define fun (function->statistic (lambda (args ...) body ...))))
+(define-syntax define-statistic
+  (syntax-rules ()
+    [(define-statistic (fun args ...) body ...)
+     (define fun (function->statistic (lambda (args ...) body ...)))]
+    [(define-statistic (fun args ... . more) body ...)
+     (define fun (function->statistic (lambda (args ... . more) body ...)))]))
 
 (module+ test
   (require rackunit)

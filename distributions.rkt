@@ -1,7 +1,19 @@
 #lang typed/racket
 
-;; Provide tools for working with distribution objects.
-(provide n-iid)
+;; Provide tools for working with distribution objects, including the basic
+;; methods from math/distributions. Provide also the basic distribution
+;; constructors.
+(provide n-iid pdf sample cdf inv-cdf
+         beta-dist beta-dist-alpha beta-dist-beta
+         cauchy-dist cauchy-dist-mode cauchy-dist-scale
+         delta-dist delta-dist-mean
+         exponential-dist exponential-dist-mean
+         gamma-dist gamma-dist-shape gamma-dist-scale
+         logistic-dist logistic-dist-mean logistic-dist-scale
+         normal-dist normal-dist-mean normal-dist-stddev
+         triangle-dist triangle-dist-min triangle-dist-max triangle-dist-mode
+         truncated-dist truncated-dist-original truncated-dist-min truncated-dist-max
+         uniform-dist uniform-dist-min uniform-dist-max)
 
 (require math/distributions)
 (require racket/flonum)

@@ -8,14 +8,9 @@
                   [sandbox-error-output 'string]
                   [sandbox-memory-limit #f]
                   [sandbox-eval-limits #f])
-     (make-evaluator 'racket)))
-
-@interaction-eval[#:eval my-evaluator
-                  (require "empirical-dist.rkt" "distributions.rkt"
-                           "statistic.rkt" math/distributions)]
+     (make-evaluator 'strappy)))
 
 @require[@for-label[strappy
-                    racket/base
                     math/distributions]]
 
 @title{strappy: Statistical Concepts in Racket}
