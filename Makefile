@@ -1,13 +1,11 @@
 
-RACO=/Applications/Racket\ v6.3/bin/raco
-
 all: test
 
 test:
-	$(RACO) test -x .
+	raco test -x .
 
 docs: scribblings/*.scrbl
-	$(RACO) scribble \
+	raco scribble \
 		--html \
 		--dest docs \
 		--dest-name index \
@@ -16,7 +14,7 @@ docs: scribblings/*.scrbl
 		scribblings/strappy.scrbl
 
 link:
-	$(RACO) pkg install --link -n strappy $$(pwd)
+	raco pkg install --link -n strappy $$(pwd)
 
 unlink:
-	$(RACO) pkg remove strappy
+	raco pkg remove strappy
