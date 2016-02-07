@@ -16,10 +16,10 @@
         arg))
 
   (define ((sample-from-fun args) [multiple #f])
-    (define sampled (map arg->sample args))
+    (define (sample) (map arg->sample args))
     (if multiple
-        (for/list ([i (in-range 0 multiple)]) (apply fun sampled))
-        (apply fun sampled)))
+        (for/list ([i (in-range 0 multiple)]) (apply fun (sample)))
+        (apply fun (sample))))
 
   (lambda args
     (unless (procedure-arity-includes? fun (length args))
