@@ -28,6 +28,7 @@
 (nary-statistify d* *)
 (nary-statistify d/ /)
 
+(statistify dabs abs)
 (nary-statistify dmax max)
 (nary-statistify dmin min)
 (statistify dfloor floor)
@@ -61,6 +62,7 @@
 
 ;;; Basic statistics
 (nary-statistify dmean mean)
+(nary-statistify dquantile quantile)
 
 ;; I don't think I can write a macro that defines a function to accept
 ;; arbitrary keyword arguments; instead, declare both cases as separate
