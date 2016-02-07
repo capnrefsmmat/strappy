@@ -38,14 +38,6 @@
 
 (define-type Empirical-Dist (empirical-dist-struct Real Real))
 
-;; Count the number of times each value occurs in a sequence,
-;; returning a hash table of value => count pairs.
-(: item-counter (-> (Vectorof Real) (HashTable Real Integer)))
-(define (item-counter items)
-  (for/fold ([table : (HashTable Real Integer) (hash)])
-            ([i items])
-    (hash-update table i add1 (lambda () 0))))
-
 ;; Create an empirical distribution from a list of data.
 (: empirical-dist (-> (Listof Real) Empirical-Dist))
 (define (empirical-dist data)
@@ -54,7 +46,7 @@
 
   (define n (vector-length ordered-data))
 
-  (define table (item-counter ordered-data))
+  (define table (samples->hash ordered-data))
 
   (: cdf (->* (Real) (Any Any) Flonum))
   (define (cdf query [log? #f] [1-p? #f])
