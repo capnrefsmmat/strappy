@@ -1,5 +1,5 @@
 strappy
-Copyright (c) 2016 alexreinhart
+Copyright (c) 2016 Alex Reinhart
 
 This package is distributed under the GNU Lesser General Public
 License (LGPL).  This means that you can link strappy into proprietary
