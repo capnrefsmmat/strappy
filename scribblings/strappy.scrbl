@@ -28,7 +28,7 @@ basic introductory statistics.
 
 @section{Distributions}
 
-@defproc[(empirical [data (Listof Real)])
+@defproc[(empirical-dist [data (Listof Real)])
          Empirical-Dist]{
  Creates an empirical distribution from the list of provided
  data points. The empirical distribution supports @racket[sample], @racket[cdf],
@@ -37,7 +37,7 @@ basic introductory statistics.
 
  @examples[#:eval my-evaluator
 
-           (define foo (empirical (list 1 2 2 3 4 5)))
+           (define foo (empirical-dist (list 1 2 2 3 4 5)))
            (sample foo 10)
 
            (pdf foo 2)

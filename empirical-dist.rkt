@@ -1,6 +1,6 @@
 #lang typed/racket
 
-(provide empirical Empirical-Dist)
+(provide empirical-dist Empirical-Dist)
 
 (require math/distributions)
 (require math/statistics)
@@ -47,8 +47,8 @@
     (hash-update table i add1 (lambda () 0))))
 
 ;; Create an empirical distribution from a list of data.
-(: empirical (-> (Listof Real) Empirical-Dist))
-(define (empirical data)
+(: empirical-dist (-> (Listof Real) Empirical-Dist))
+(define (empirical-dist data)
   (define ordered-data
     (vector->immutable-vector (list->vector (sort data <))))
 
@@ -95,7 +95,7 @@
   (require typed/rackunit math/distributions)
 
   ; length 8
-  (define foo (empirical (list 0 1 1 2 3 3 3.2 4)))
+  (define foo (empirical-dist (list 0 1 1 2 3 3 3.2 4)))
 
   (check-equal? (pdf foo 1) 0.25)
   (check-equal? (pdf foo 0) 0.125)
