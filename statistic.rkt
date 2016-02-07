@@ -25,7 +25,9 @@
     (unless (procedure-arity-includes? fun (length args))
       (apply raise-arity-error fun (procedure-arity fun) args))
 
-    (distribution pdf (sample-from-fun args))))
+    (if (ormap distribution? args)
+        (distribution pdf (sample-from-fun args))
+        (apply fun args))))
 
 (define-syntax-rule (define-statistic (fun args ...) body ...)
   (define fun (function->statistic (lambda (args ...) body ...))))
@@ -38,10 +40,15 @@
 
   (check-exn exn:fail? (lambda () (foo 1)))
   (check-exn exn:fail? (lambda () (pdf (foo 1 2))))
-  (check-equal? (sample (foo 1 2)) 3)
+  (check-equal? (foo 1 2) 3)
 
   (define-statistic (multi-foo a b)
     (define c (* 2 a))
     (+ b c))
 
-  (check-equal? (sample (multi-foo 2 3)) 7))
+  (check-equal? (multi-foo 2 3) 7)
+
+  (define-statistic (foo-rest arg . args)
+    (apply + arg args))
+
+  (check-equal? (foo-rest 2 3 4) 9))
