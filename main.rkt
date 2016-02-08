@@ -12,4 +12,6 @@
                        "basic-statistics.rkt")
          #%module-begin #%app #%datum #%top #%top-interaction
          lambda if cond define require parameterize
-         list vector count filter map)
+         list vector count filter map
+         first rest second third fourth fifth sixth seventh eighth ninth tenth
+	 last)
