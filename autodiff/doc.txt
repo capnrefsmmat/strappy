@@ -1,0 +1,77 @@
+The contents of the autodiff directory are ported from Will Farr's deriv.plt
+package for MzScheme, with modifications to be more suitable for strappy.
+Original version copyright 2007, Will M. Farr; modifications by Alex Reinhart.
+Licensed under the GNU GPLv3.
+
+The documentation below is from the original package; it does not apply to this
+port.
+
+* The diff.plt PlaneT Package: _Automatic Differentiation_   -*- outline -*-
+
+The _diff.plt_ PlaneT package provides a MzScheme language module
+which replaces the usual numerical operators of scheme with ones
+extended to allow for the _automatic computation of derivatives_.  The
+higher-order procedures _D_ and _partial_ compute ordinary derivatives
+of functions of a single variable and _partial derivatives_ of
+functions of more than one variable, respectively.  These derivatives
+are computed without numerical approximation; see the scribble
+documentation which is installed with the package for more
+information.
+
+To use the diff.plt package in your programs, wrap them in a module
+which uses 
+
+(planet "deriv-lang.ss" ("wmfarr" "diff.plt" 1))
+
+as its initial language.  Write your functions in the same way as you
+normally would (i.e. there are no Scheme statements which are
+off-limits); the _diff-lang.ss_ module extends numerical operations to
+allow for computing derivatives of arbitrary order.  (See the How it's
+Done section for an explanation of the method used.)
+
+The diff.plt package was written by Will M. Farr <farr@mit.edu> and is
+released under the GPL.  See the License section of this document for
+more information.
+
+
+** Examples
+
+The following examples illustrate the use of the _D_ and _partial_
+higher-order functions.  
+
+(module check-vdp (planet "deriv-lang.ss" ("wmfarr" "deriv.plt" 2))
+  (provide solves-vdp?)
+
+  ;; Check whether the given function satisfies the second-order
+  ;; nonlinear Van der Pol oscillator equation at a randomly-chosen
+  ;; argument.  (ODE from the GSL Reference Manual, at
+  ;; http://www.gnu.org/software/gsl/manual/html_node/ODE-Example-programs.html
+  ;; ).  The Van der Pol equation is
+  ;;
+  ;; x''(t) + \mu x'(t) (x(t)^2 - 1) + x(t) = 0.
+  ;;
+  ;; Note that (D x) returns a function which computes the derivative
+  ;; of x at a given argument, and (D (D x)) returns a function which
+  ;; computes the second derivative of x at a given argument, etc.
+  (define (solves-vdp? mu x)
+    (let ((arg (random)))
+      (let ((xpp ((D (D x)) arg))
+            (xp ((D x) arg))
+            (x (x arg)))
+        (zero? (+ xpp
+                  (* mu xp (- (* x x) 1))
+                  x))))))
+
+(module paraboloid-derivs (planet "deriv-lang.ss" ("wmfarr" "deriv.plt" 2))
+  (provide paraboloid dpdx dpdy)
+
+  ;; Paraboloid centered on 0.
+  (define (paraboloid x y)
+    (+ (* 10 x x)
+       (* 20 y y)
+       30))
+
+  ;; And its partial derivatives.
+  (define dpdx ((partial 0) paraboloid))
+  (define dpdy ((partial 1) paraboloid)))
+  

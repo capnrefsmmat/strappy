@@ -1,10 +1,12 @@
 #lang racket/base
 
-(provide pi)
 
 (require "statistic.rkt"
-         racket/math
+         "autodiff/deriv.rkt"
          math/statistics)
+
+;; Provide derivative operators from autodiff.
+(provide D gradient jacobian (struct-out deriv))
 
 (define-syntax-rule (statistify newname oldname)
   (begin
@@ -41,7 +43,7 @@
 (nary-statistify d>= >=)
 
 (statistify dsqrt sqrt)
-(statistify dexpt expt)
+(nary-statistify dexpt expt)
 (statistify dexp exp)
 (statistify dlog log)
 
@@ -53,12 +55,6 @@
 (nary-statistify datan atan)
 
 (statistify dsqr sqr)
-
-(statistify dsinh sinh)
-(statistify dcosh cosh)
-(statistify dtanh tanh)
-
-(statistify dorder-of-magnitude order-of-magnitude)
 
 ;;; Basic statistics
 (nary-statistify dmean mean)
