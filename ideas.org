@@ -1,0 +1,86 @@
+#+TITLE: Strappy ideas
+#+AUTHOR: Alex Reinhart
+
+* DONE Implement #lang strappy
+  Provide racket/base plus a library of test statistics and such.
+
+* DONE Write or provide a bunch of basic test statistics
+  CLOSED: [2016-02-07 Sun 19:28]
+  - mean
+  - variance
+  - std. dev.
+  - median
+  - min
+  - max
+
+* DONE Permutation tests
+  CLOSED: [2016-02-07 Sun 19:28]
+  Define macro or higher-order function which takes a function and returns a
+  version which samples from permuted arguments.
+
+* TODO Write more examples
+  Watch out for http://statcourse.com/misuse.htm
+  - Contingency table permutation
+    https://udel.edu/~mcdonald/statrandind.html
+  - Precision calculation
+    Choose a desired CI width, show proportion of CIs under that width for
+    varying sample sizes
+* TODO Custom printing of distribution objects
+  https://docs.racket-lang.org/reference/Printer_Extension.html#%28def._%28%28lib._racket%2Fprivate%2Fbase..rkt%29._gen~3acustom-write%29%29
+
+* TODO Error checking for my macros and functions
+  Write contracts or error checks for each so they give reasonable errors when
+  misused.
+* TODO Is cross-validation possible to implement?
+  We'd need some notion of "risk" and a sampler which draws from the folds of
+  the data, then tests against the rest.
+
+* TODO Implement autodiff for all base functions so we can get transformed pdfs
+  Try porting wmfarr's autodiff package to modern Racket, then apply it to all
+  of our builtins. Then have function->statistic derive the pdf of the result
+  from the pdfs of the arguments.
+
+  https://planet.racket-lang.org/display.ss?package=deriv.plt&owner=wmfarr
+
+** TODO Use numerical integration to get CDFs of transformed variables
+
+* TODO Borrow syntax restrictions and changes from the HtDP teaching languages
+  https://docs.racket-lang.org/drracket/htdp-langs.html
+
+  Case sensitivity would be a good one, for random variable notation
+  conventions. Some of the other language simplifications would be good to
+  prevent errors for new students.
+
+* TODO Figure out how to handle ANOVA
+* TODO Contingency table functions and chi-squared-like tests
+* TODO Write an outline for /Statistics Done Right/
+* TODO Clarify distinction between define, define-statistic
+  It's not currently obvious to readers which should be used when. Consider
+
+  #+BEGIN_SRC racket
+    (define-statistic (abs-mean-difference xs ys)
+      (abs (- (mean xs) (mean ys))))
+
+    (define permuted-mean-difference (permuted abs-mean-difference))
+  #+END_SRC
+
+  Why is =abs-mean-difference= a statistic and =permuted-mean-difference= not?
+
+  One option is to make =define-statistic= accept a constant-defining form, so
+  we can write
+  #+BEGIN_SRC racket
+    (define-statistic permuted-mean-difference (permuted abs-mean-difference))
+  #+END_SRC
+
+  That solves the problem in this case, but not in others. Maybe I should write
+  more example code so the issue becomes clearer.
+* TODO Causal inference DSL
+  It'd be nice to be able to postulate a set of causal relationships, then query
+  the graph, asking, "If we condition on these nodes, can we infer the causal
+  relationship between these other nodes?"
+* TODO User-defined random distributions from their CDFs
+  Using the autodiff features to get the PDF
+* TODO Modeling language with automatically-generated MLEs
+  Let the user define a likelihood function, then provide some data. Use
+  autodiff to get the log-likelihood's maximum automatically with Newton-Raphson
+  or something similar, plus CIs and so on.
