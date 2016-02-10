@@ -31,4 +31,5 @@
          lambda if cond define require parameterize
          list vector count filter map
          first rest second third fourth fifth sixth seventh eighth ninth tenth
-         last)
+         last
+         for for/list)
