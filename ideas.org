@@ -18,6 +18,16 @@
   Define macro or higher-order function which takes a function and returns a
   version which samples from permuted arguments.
 
+* DONE Implement autodiff for all base functions so we can get transformed pdfs
+  CLOSED: [2016-02-09 Tue 14:58]
+  Try porting wmfarr's autodiff package to modern Racket, then apply it to all
+  of our builtins. Then have function->statistic derive the pdf of the result
+  from the pdfs of the arguments.
+
+  https://planet.racket-lang.org/display.ss?package=deriv.plt&owner=wmfarr
+
+** TODO Use numerical integration to get CDFs of transformed variables
+
 * TODO Write more examples
   Watch out for http://statcourse.com/misuse.htm
   - Contingency table permutation
@@ -35,15 +45,6 @@
   We'd need some notion of "risk" and a sampler which draws from the folds of
   the data, then tests against the rest.
 
-* TODO Implement autodiff for all base functions so we can get transformed pdfs
-  Try porting wmfarr's autodiff package to modern Racket, then apply it to all
-  of our builtins. Then have function->statistic derive the pdf of the result
-  from the pdfs of the arguments.
-
-  https://planet.racket-lang.org/display.ss?package=deriv.plt&owner=wmfarr
-
-** TODO Use numerical integration to get CDFs of transformed variables
-
 * TODO Borrow syntax restrictions and changes from the HtDP teaching languages
   https://docs.racket-lang.org/drracket/htdp-langs.html
 
@@ -52,6 +53,12 @@
   prevent errors for new students.
 
 * TODO Figure out how to handle ANOVA
+* TODO Create mixture distribution constructor
+  Provide a distribution and distributions on some of its arguments.
+
+  Sampling is fairly easy, but is there a straightforward way to get the pdfs or
+  cdfs?
+
 * TODO Contingency table functions and chi-squared-like tests
 * TODO Write an outline for /Statistics Done Right/
 * TODO Clarify distinction between define, define-statistic
@@ -78,9 +85,70 @@
   It'd be nice to be able to postulate a set of causal relationships, then query
   the graph, asking, "If we condition on these nodes, can we infer the causal
   relationship between these other nodes?"
+
 * TODO User-defined random distributions from their CDFs
   Using the autodiff features to get the PDF
+
+  Something like this:
+
+  #+BEGIN_SRC racket
+    (define-distribution foo-dist
+      ([shape 0]
+       [scale 1])
+      #:cdf (lambda (x) (some-function-of shape scale x))
+      #:min-x 0
+      #:max-x +inf.0
+      #:pdf (lambda (x) (some-other-function)) ; optional
+      #:inv-cdf (lambda (x) (inverse-of-cdf)) ; optional
+      )
+  #+END_SRC
+
+  The pdf could be found by autodiff, the inv-cdf by numerical root-finding if
+  absolutely necessary. (This is guaranteed to work because the cdf is monotone,
+  but it's not guaranteed to be fast.)
+
+  My macro skills are insufficient to implement this.
+
+* TODO Find an elegant way of representing multivariate data
+  If we want to be able to do regression, contingency tables, ANOVA, or anything
+  multivariate, we need to represent data tables reasonably efficiently.
+
+  One option is a list of structs, the struct defining the fields recorded for
+  each observation. This gives the advantage of named fields. Columnwise
+  operations, joins, groups, and so on wouldn't be very efficient, and there'd
+  be no way to subset columns -- you get the whole struct or nothing.
+
 * TODO Modeling language with automatically-generated MLEs
   Let the user define a likelihood function, then provide some data. Use
   autodiff to get the log-likelihood's maximum automatically with Newton-Raphson
   or something similar, plus CIs and so on.
+
+  For simple models with iid data, we just need the contribution to the
+  likelihood from single terms, and then we can sum up the logs and maximize.
+
+  A sketch:
+
+  #+BEGIN_SRC racket
+    (define-likelihood ((regression data-row) intercept slope sigma)
+      (normal-error (- (data-y data-row)
+                       (+ intercept (* slope (data-x data-row))))
+                    sigma))
+  #+END_SRC
+  where, importantly, =normal-error= is differentiable.
+
+  Then we can do something like
+
+  #+BEGIN_SRC racket
+    (fit regression big-list-of-rows)
+  #+END_SRC
+
+  and get back a structure with MLEs, variance-covariance matrix, whatever.
+
+  Open problems:
+  - The range of error models we can use is pretty small. Least absolute
+    deviations, for example, isn't differentiable
+  - Emphasizes the error distribution, when in regression it's the least
+    important assumption
+  - What about, say, ANOVA, where we have discrete factor levels and we need to
+    select which level is relevant to each row of data? A big =cond= or mess of
+    =if= expressions would be rather ugly.
