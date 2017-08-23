@@ -34,7 +34,6 @@ different from 105 picocuries per liter.
 @margin-note{This example stolen from @emph{Introduction to the Practice of
 Statistics} and reworked to use bootstrapping.}
 
-
 @examples[#:eval my-evaluator
           (define readings (list 91.9 97.8 111.4 122.3 105.4 95.0
                                  103.8 99.6 96.6 119.3 104.8 101.7))
@@ -47,7 +46,7 @@ new statistic that takes the absolute value of the difference between our
 sample and the mean:
 
 @examples[#:eval my-evaluator
-          (define-statistic (abs-difference-from xs constant)
+          (define (abs-difference-from xs constant)
             (abs (- (mean xs) constant)))
 
           (define true-diff (abs-difference-from readings 105))]

@@ -17,7 +17,7 @@
 ;; The alternative hypothesis is that X has mean 2 and stddev 2.
 (define X (normal-dist 1 2))
 
-(define-statistic (effect-and-power n)
+(define (effect-and-power n)
   (define samples (sample (n-iid X n) num-sims))
 
   (define sample-means (map mean samples))

@@ -8,24 +8,10 @@
 (define n 10)
 (define X (n-iid (normal-dist) n))
 
-;; Return the CIs for a sample of means (or CI endpoints).
-(define-statistic (ci-for samp)
-  (list
-   (quantile 0.025 < samp)
-   (quantile 0.975 < samp)))
+;; The lower endpoint of a 95% CI.
+(define (lower-tail dist)
+  (quantile 0.025 < dist))
 
-(ci-for (sample (mean X) 100))
+(sample (lower-tail (n-iid (mean X) 100)))
 
-;; Take a sample of CIs and 'which', an accessor for which endpoint we want.
-(define-statistic (endpoint-ci cis which)
-  (ci-for (map which cis)))
-
-;; The CI for the lower endpoint of the CI, based on 100 samples.
-(endpoint-ci (sample (ci-for (n-iid (mean X) 100))
-		     100)
-	     first)
-
-;; Similarly, for the upper endpoint
-(endpoint-ci (sample (ci-for (n-iid (mean X) 100))
-		     100)
-	     last)
+(sample (lower-tail (n-iid (lower-tail (n-iid (mean X) 100)) 100)))

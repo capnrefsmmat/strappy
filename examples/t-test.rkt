@@ -9,7 +9,7 @@
 
 ;; We take the difference between the sample mean and our postulated hypothesis
 ;; mean.
-(define-statistic (abs-difference-from xs constant)
+(define (abs-difference-from xs constant)
   (abs (- (mean xs) constant)))
 
 (define true-diff (abs-difference-from readings 105))

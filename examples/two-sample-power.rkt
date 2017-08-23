@@ -5,7 +5,7 @@
 (define X (normal-dist 1 2))
 (define Y (normal-dist 0 2))
 
-(define-statistic (abs-mean-difference xs ys)
+(define (abs-mean-difference xs ys)
   (abs (- (mean xs) (mean ys))))
 
 (define permuted-mean-difference (permuted abs-mean-difference))

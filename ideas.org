@@ -28,6 +28,100 @@
 
 ** TODO Use numerical integration to get CDFs of transformed variables
 
+* DONE Clarify distinction between define, define-statistic
+  CLOSED: [2017-08-22 Tue 20:16]
+  It's not currently obvious to readers which should be used when. Consider
+
+  #+BEGIN_SRC racket
+    (define-statistic (abs-mean-difference xs ys)
+      (abs (- (mean xs) (mean ys))))
+
+    (define permuted-mean-difference (permuted abs-mean-difference))
+  #+END_SRC
+
+  Why is =abs-mean-difference= a statistic and =permuted-mean-difference= not?
+
+  One option is to make =define-statistic= accept a constant-defining form, so
+  we can write
+  #+BEGIN_SRC racket
+    (define-statistic permuted-mean-difference (permuted abs-mean-difference))
+  #+END_SRC
+
+  That solves the problem in this case, but not in others. Maybe I should write
+  more example code so the issue becomes clearer.
+
+  Venture uses "assume" for defining random variables.
+
+  We have a matrix of possible inputs/outputs:
+
+  |             | Random out   | Constant out |
+  |-------------+--------------+--------------|
+  | Random in   | RV/statistic | n/a          |
+  | Constant in | Distribution | Function     |
+
+  Right now =define-statistic= is handling both statistics and functions, since it
+  can produce random or constant outputs depending on its inputs. We use =define=
+  for distributions and for constant values.
+
+  Part of the problem is we don't really have "random variables": we have named
+  distributions. =assuming= would give us random variables in scopes.
+
+  Alternately: is =define-statistic= necessary if all base constructs provided to
+  us are already statistics? Consider the =kde.rkt= example, where writing
+
+  #+BEGIN_SRC racket
+    (define-statistic (kde data bandwidth)
+      (+ data (normal-dist 0 bandwidth)))
+  #+END_SRC
+
+  doesn't work (not sure why not), wrapping the =normal-dist= in =sample= works, but
+  we can just write it as a =define= and it works fine. If all the pieces you
+  compose ingest distributions and spit out distributions, do you need
+  =define-statistic= at all?
+
+  Nope -- every example written works without it!
+* TODO What if a function uses the same argument in multiple places?
+
+  Consider
+
+  #+BEGIN_SRC racket
+    (define (double x)
+      (+ x x))
+  #+END_SRC
+
+  Here, =+= has been statistified, so it draws two samples from =x= and returns
+  their sum.
+
+  But what if I want /one/ sample from =x=, doubled?
+
+  I guess this behavior makes sense if we exclusively talk about variables as
+  distributions. If you want just one sample from them, use =sample=.
+
+* TODO Distinguish between RVs and distributions
+  Make a =define-distribution= for giving names to specific distributions.
+
+  Then define an =assuming= macro that behaves like =let*= and creates random
+  variables:
+  
+  #+BEGIN_SRC racket
+    (assuming ([X ~ (normal-dist)]
+               [eps ~ (normal-dist)]
+               [Y ~ (+ (* 2 X) eps)])
+              (do-stuff-with X Y))
+  #+END_SRC
+
+  Within the body of =assuming=, the variables are bound, and Y's value is
+  correlated with X's as expected. The value of =assuming= is the distribution
+  of the value of its body, over repeated draws from the bound random variables.
+
+  Next, remove =define-statistic= entirely. We should just write functions of
+  ordinary lists/vectors; inside the =assuming= body, random variables are just
+  draws from their distributions.
+
+  We still need functions that generate distributions (like one taking a sample
+  size and returning the distribution of effect sizes), but these can just embed
+  =assuming= blocks.
+
 * TODO Write more examples
   Watch out for http://statcourse.com/misuse.htm
   - Contingency table permutation
